@@ -1,5 +1,16 @@
-import "@/styles/globals.css";
+// ... other imports
 
-export default function App({ Component, pageProps }) {
-  return <Component {...pageProps} />;
+export default function MyApp(props) {
+  var { user, setUser } = useContext(AppContext);
+  const { Component, pageProps } = props;
+
+  return (
+    <AppContext.Provider value={{ isAuthenticated: false, user: null, setUser: () => {} }}>
+      <Head>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </Head>
+    </AppContext.Provider>
+  );
 }
