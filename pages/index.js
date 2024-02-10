@@ -16,20 +16,8 @@ function Home() {
   
     return (
         <ApolloProvider client={client}>
-          <div className="search">
-              <h2> Local Restaurants</h2>
-                <InputGroup >
-                <InputGroupAddon addonType="append"> Search </InputGroupAddon>
-                <Input
-                    onChange={(e) =>
-                    setQuery(e.target.value.toLocaleLowerCase())
-                    }
-                    value={query}
-                />
-                </InputGroup><br></br>
-            </div>
+          <div className="search" />
             <RestaurantList search={query} />
-            <Cart> </Cart>
         </ApolloProvider>
     );
   }
