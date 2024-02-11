@@ -1,7 +1,6 @@
-import {gql,useQuery} from '@apollo/client';
-import Dishes from "./dishes"
-import {useContext, useState} from 'react';
-
+import { gql, useQuery } from '@apollo/client';
+import Dishes from "./dishes";
+import { useContext, useState } from 'react';
 
 import AppContext from "@/components/context";
 import {
@@ -13,12 +12,13 @@ import {
   CardTitle,
   Container,
   Row,
-  Col} from "reactstrap";
+  Col
+} from "reactstrap";
 
-function RestaurantList(props){
-  const[restaurantID, setRestaurantID] = useState(0)
-  const {cart } = useContext(AppContext);
-  const [state, setState] = useState(cart)
+function RestaurantList(props) {
+  const [restaurantID, setRestaurantID] = useState(null); // Change initial value to null
+  const { cart } = useContext(AppContext);
+
   const GET_RESTAURANTS = gql`
     query Restaurant {
       restaurants {
@@ -40,63 +40,56 @@ function RestaurantList(props){
       }
     }
   `;
-  const { loading, error, data } = useQuery(GET_RESTAURANTS)
+
+  const { loading, error, data } = useQuery(GET_RESTAURANTS);
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>ERROR</p>;
   if (!data) return <p>Not found</p>;
-  console.log(`Query Data: ${data.restaurants}`)
 
-
-console.log("Data:", data);
-let searchQuery = data.restaurants.data.filter((res) => {
+  let searchQuery = data.restaurants.data.filter((res) => {
     return res.attributes.name.toLowerCase().includes(props.search.toLowerCase());
   });
 
-let restId = searchQuery[0].id
- 
-// definet renderer for Dishes
-  const renderDishes = (restaurantID) => {
-    return (<Dishes restId={restaurantID}> </Dishes>)
+  const handleRestaurantClick = (id) => {
+    setRestaurantID(id === restaurantID ? null : id);
   };
-if(searchQuery.length > 0){
-  const restList = searchQuery.map((res) => (
-    <Col xs="6" sm="4" key={res.id}>
-      <Card style={{ margin: "0 0.5rem 20px 0.5rem" }}>
-        <CardImg
-          top={true}
-          style={{ height: 200 }}
-          src={
-          `http://localhost:1337`+ res.attributes.image.data[0].attributes.url
-          }
-        />
-        <CardBody>
-          <CardText>{res.attributes.description[0]?.children[0]?.text}</CardText>
-        </CardBody>
-        <div className="card-footer">
-        
-        <Button color="info" onClick={()=> setRestaurantID(res.id)}>{res.attributes.name}</Button>
-         
-        </div>
-      </Card>
-    </Col>
-  ))
 
-  return(
-
+  return (
     <Container>
-        <Row xs='3'>
-            {restList}
-        </Row>
+      <Row xs='3'>
+        {searchQuery.map((res) => (
+          <Col xs="6" sm="4" key={res.id}>
+            <Card style={{ margin: "0 0.5rem 20px 0.5rem" }}>
+              <CardImg
+                top={true}
+                style={{ height: 200 }}
+                src={`http://localhost:1337` + res.attributes.image.data[0].attributes.url}
+              />
+              <CardBody>
+                <CardText>{res.attributes.description[0]?.children[0]?.text}</CardText>
+              </CardBody>
+              <div className="card-footer">
+                <Button
+                  color="info"
+                  onClick={() => handleRestaurantClick(res.id)}
+                  active={restaurantID === res.id}
+                >
+                  {res.attributes.name}
+                </Button>
+              </div>
+            </Card>
+          </Col>
+        ))}
+      </Row>
 
+      {restaurantID && (
         <Row xs='3'>
-        {renderDishes(restaurantID)}
+          <Dishes restId={restaurantID} key={restaurantID} />
         </Row>
+      )}
     </Container>
- 
-  )
-} else {
-  return <h1> No Restaurants Found</h1>
-}
+  );
 }
 
-export default RestaurantList
+export default RestaurantList;
