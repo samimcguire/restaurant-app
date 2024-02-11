@@ -1,4 +1,5 @@
 import { gql, useQuery } from '@apollo/client';
+import { useRouter } from 'next/router';
 import Dishes from "./dishes";
 import { useContext, useState } from 'react';
 
@@ -15,7 +16,9 @@ import {
   Col
 } from "reactstrap";
 
+
 function RestaurantList(props) {
+  const router =useRouter();
   const [restaurantID, setRestaurantID] = useState(null); // Change initial value to null
   const { cart } = useContext(AppContext);
 
@@ -55,6 +58,11 @@ function RestaurantList(props) {
     setRestaurantID(id === restaurantID ? null : id);
   };
 
+  const navigateToRestaurantPage = (restaurantName) => {
+    // Navigate to the restaurant page
+    router.push(`/restaurants/${encodeURIComponent(restaurantName)}`);
+  };
+
   return (
     <Container>
       <Row xs='3'>
@@ -72,7 +80,10 @@ function RestaurantList(props) {
               <div className="card-footer">
                 <Button
                   color="info"
-                  onClick={() => handleRestaurantClick(res.id)}
+                  onClick={() => {
+                    handleRestaurantClick(res.id)
+                    navigateToRestaurantPage(res.attributes.name);
+                  }}
                   active={restaurantID === res.id}
                 >
                   {res.attributes.name}

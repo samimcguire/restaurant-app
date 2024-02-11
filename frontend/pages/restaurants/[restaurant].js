@@ -1,9 +1,21 @@
-import { useRouter } from "next/router";
-import styles from "@/styles/Home.module.css";
+import { useRouter } from 'next/router';
+import Dishes from './dishes';
+import { Row, Container } from "reactstrap";
 
-export default function Restaurant() {
-  const router = useRouter()
+function Restaurant() {
+  const router = useRouter();
+  const restaurantID = router.query.restaurant; // Fetch restaurantID from the query parameter
+
   return (
-    <h1>Restaurant Page {router.query.restaurant}</h1>
+    <Container>
+      <h1>{restaurantID}</h1>
+      {restaurantID && (
+        <Row xs='3'>
+          <Dishes restId={restaurantID} key={restaurantID} />
+        </Row>
+      )}
+    </Container>
   );
 }
+
+export default Restaurant;

@@ -51,7 +51,9 @@ function Dishes({ restId }) {
 
   const { loading, error, data } = useQuery(GET_RESTAURANT_DISHES, {
     variables: { id: restId },
+    skip: !restId,
   });
+  
 
   if (loading) return <p>Loading...</p>;
   if (error || !data || !data.restaurant || !data.restaurant.data) return <p>ERROR here</p>;
