@@ -20,13 +20,22 @@ function RestaurantList(props){
   const {cart } = useContext(AppContext);
   const [state, setState] = useState(cart)
   const GET_RESTAURANTS = gql`
-    query {
+    query Restaurant {
       restaurants {
-        id
-        name
-        description
-        image {
-          url
+        data {
+          id
+          attributes {
+            name
+            address
+            description
+            image {
+              data {
+                attributes {
+                  url
+                }
+              }
+            }
+          }
         }
       }
     }
@@ -38,9 +47,10 @@ function RestaurantList(props){
   console.log(`Query Data: ${data.restaurants}`)
 
 
-let searchQuery = data.restaurants.filter((res) =>{
-    return res.name.toLowerCase().includes(props.search)
-  })
+console.log("Data:", data);
+let searchQuery = data.restaurants.data.filter((res) => {
+    return res.attributes.name.toLowerCase().includes(props.search.toLowerCase());
+  });
 
 let restId = searchQuery[0].id
  
@@ -56,33 +66,31 @@ if(searchQuery.length > 0){
           top={true}
           style={{ height: 200 }}
           src={
-          `http://localhost:1337`+ res.image.url
+          `http://localhost:1337`+ res.attributes.image.data[0].attributes.url
           }
         />
         <CardBody>
-          <CardText>{res.description}</CardText>
+          <CardText>{res.attributes.description[0]?.children[0]?.text}</CardText>
         </CardBody>
         <div className="card-footer">
         
-        <Button color="info" onClick={()=> setRestaurantID(res.id)}>{res.name}</Button>
+        <Button color="info" onClick={()=> setRestaurantID(res.id)}>{res.attributes.name}</Button>
          
         </div>
       </Card>
     </Col>
   ))
 
-
   return(
 
     <Container>
-    <Row xs='3'>
-      {restList}
-    </Row>
-  
-    <Row xs='3'>
-    {renderDishes(restaurantID)}
-    </Row>
- 
+        <Row xs='3'>
+            {restList}
+        </Row>
+
+        <Row xs='3'>
+        {renderDishes(restaurantID)}
+        </Row>
     </Container>
  
   )
@@ -90,4 +98,5 @@ if(searchQuery.length > 0){
   return <h1> No Restaurants Found</h1>
 }
 }
-   export default RestaurantList
+
+export default RestaurantList
