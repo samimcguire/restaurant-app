@@ -3,7 +3,7 @@ import Dishes from "./dishes"
 import {useContext, useState} from 'react';
 
 
-import AppContext from "./context"
+import AppContext from "@/components/context";
 import {
   Button,
   Card,
@@ -70,6 +70,7 @@ if(searchQuery.length > 0){
       </Card>
     </Col>
   ))
+
 
   return(
 
