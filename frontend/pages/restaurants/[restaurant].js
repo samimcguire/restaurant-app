@@ -5,14 +5,18 @@ import { Row, Container } from "reactstrap";
 function Restaurant() {
   const router = useRouter();
   const restaurantName = router.query.restaurant; // Fetch restaurantName from the query parameter
-  const restaurantID = router.query.state?.restaurantID; // Access restaurantID from state
+  const restaurantId = router.query.restaurantId; // Access restaurantID from state
+  
+  const renderDishes = (restaurantId) => {
+    return (<Dishes restId={restaurantId}> </Dishes>)
+  };   
+
   return (
     <Container>
       <h1>{restaurantName}</h1>
+      <h3>Dishes</h3>
         <Row xs='3'>
-          {restaurantID && (
-              <Dishes restId={restaurantID} key={restaurantID} />
-          )}
+          {renderDishes(restaurantId)}
         </Row>
     </Container>
   );

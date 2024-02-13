@@ -58,11 +58,6 @@ const RestaurantList = (props) => {
 
   let restId = searchQuery[0].id
 
-  // // definet renderer for Dishes
-  // const renderDishes = (restaurantID) => {
-  //   return (<Dishes restId={restaurantID}> </Dishes>)
-  // };
-
   const handleRestaurantClick = (id) => {
     setRestaurantID(id === restaurantID ? null : id);
   };
@@ -70,7 +65,7 @@ const RestaurantList = (props) => {
   // const navigateToRestaurantPage = (restaurantName, restaurantId) => {
   //   router.push({
   //     pathname: `/restaurants/${encodeURIComponent(restaurantName)}`,
-  //     state: { restaurantID: restaurantId },
+  //     state: { restaurantId: restaurantId },
   //   });
   // };
   
