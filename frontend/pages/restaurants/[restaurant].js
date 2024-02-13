@@ -1,19 +1,19 @@
 import { useRouter } from 'next/router';
-import Dishes from './dishes';
+import Dishes from '../../components/dishes';
 import { Row, Container } from "reactstrap";
 
 function Restaurant() {
   const router = useRouter();
-  const restaurantID = router.query.restaurant; // Fetch restaurantID from the query parameter
-
+  const restaurantName = router.query.restaurant; // Fetch restaurantName from the query parameter
+  const restaurantID = router.query.state?.restaurantID; // Access restaurantID from state
   return (
     <Container>
-      <h1>{restaurantID}</h1>
-      {restaurantID && (
+      <h1>{restaurantName}</h1>
         <Row xs='3'>
-          <Dishes restId={restaurantID} key={restaurantID} />
+          {restaurantID && (
+              <Dishes restId={restaurantID} key={restaurantID} />
+          )}
         </Row>
-      )}
     </Container>
   );
 }
