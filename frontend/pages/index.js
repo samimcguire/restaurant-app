@@ -34,7 +34,7 @@ export default function App({ Component, pageProps }) {
         </InputGroup><br></br>
       </div>
       <RestaurantList search={query} />
-      <Cart> </Cart>
+      {/* <Cart> </Cart> */}
     </ApolloProvider>
   );
 };
