@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { ApolloProvider, ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
-import RestaurantList from "./restaurants/restaurantList";
+import RestaurantList from "../components/restaurantList";
 import { InputGroup, Input, InputGroupText } from "reactstrap";
+import Cart from "@/components/cart";
 
 const API_URL = process.env.STRAPI_URL || "http://localhost:1337";
 
@@ -26,7 +27,7 @@ export default function App({ Component, pageProps }) {
       <div className="search">
         <h2>Local Restaurants</h2>
         <InputGroup>
-          <InputGroupText>Search</InputGroupText>
+          <InputGroupText addonType="append">Search</InputGroupText>
           <Input
             onChange={(e) => setQuery(e.target.value.toLocaleLowerCase())}
             value={query}
@@ -34,7 +35,7 @@ export default function App({ Component, pageProps }) {
         </InputGroup><br></br>
       </div>
       <RestaurantList search={query} />
-      {/* <Cart> </Cart> */}
+      <Cart> </Cart>
     </ApolloProvider>
   );
 };

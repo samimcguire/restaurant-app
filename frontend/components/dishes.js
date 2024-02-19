@@ -1,5 +1,5 @@
 import {useRouter} from "next/router"
-import {gql,useQuery} from '@apollo/client';
+import { gql, useQuery } from "@apollo/client";
 import {useState, useContext} from 'react'
 import AppContext from "./context"
 import {
@@ -80,7 +80,7 @@ function Dishes({ restId }) {
                     color="info"
                     outline
                     onClick={() => addItem(res.attributes)}
-                  >
+                  > 
                     + Add To Cart
                   </Button>
                 </div>

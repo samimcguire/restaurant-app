@@ -1,6 +1,6 @@
 import { gql, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
-import Dishes from "../../components/dishes";
+import Dishes from "./dishes";
 import { useContext, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -77,7 +77,7 @@ const RestaurantList = (props) => {
               <CardImg
                 top={true}
                 style={{ height: 200 }}
-                src={`http://localhost:1337` + res.attributes?.image.data[0].attributes.url} />
+                src={`http://localhost:1337` + res.attributes?.image.data.attributes.url} />
               <CardBody>
                 <CardText>{res.attributes?.description[0]?.children[0]?.text}</CardText>
               </CardBody>
