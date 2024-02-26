@@ -16,76 +16,73 @@ function Cart() {
   //   problem is that cart may not be set
   const router = useRouter();
   console.log(`Router Path: ${JSON.stringify(router)}`)
-  const renderItems = ()=>{
-  let {items} = cart;
-   console.log(`items: ${JSON.stringify(items)}`)
-    if(items && items.length){
-      var itemList = cart.items.map((item) => {
-          if (item.quantity > 0) {
-            return (
-              <div
-                className="items-one"
-                style={{ marginBottom: 15 }}
-                key={item.id}
-              >
-                <div>
-                  <span id="item-price">&nbsp; ${item.price}</span>
-                  <span id="item-name">&nbsp; {item.name}</span>
-                </div>
-                <div>
-                  <Button
-                    style={{
-                      height: 25,
-                      padding: 0,
-                      width: 15,
-                      marginRight: 5,
-                      marginLeft: 10,
-                    }}
-                    onClick={() => addItem(item)}
-                    color="link"
-                  >
-                    +
-                  </Button>
-                  <Button
-                    style={{
-                      height: 25,
-                      padding: 0,
-                      width: 15,
-                      marginRight: 10,
-                    }}
-                    onClick={() => removeItem(item)}
-                    color="link"
-                  >
-                    -
-                  </Button>
-                  <span style={{ marginLeft: 5 }} id="item-quantity">
-                    {item.quantity}x
-                  </span>
-                </div>
-              </div>
-            );
-          }
-        })
-        return itemList;
-      }
-    else {
-        return (<div></div>)
-    }
+const renderItems = () => {
+  const { items } = cart;
+  console.log(`items: ${JSON.stringify(items)}`);
+
+  if (items && items.length) {
+    const uniqueItems = Array.from(new Set(items.map((item) => item.id)))
+      .map((id) => items.find((item) => item.id === id));
+
+    return uniqueItems.map((item) => (
+      <div className="items-one" style={{ marginBottom: 15 }} key={item.id}>
+        <div>
+          <span id="item-price">&nbsp; ${Number(item.attributes.priceInCents)}</span>
+          <span id="item-name">&nbsp; {item.attributes.name}</span>
+        </div>
+        <div>
+          <Button
+            style={{
+              height: 25,
+              padding: 0,
+              width: 15,
+              marginRight: 5,
+              marginLeft: 10,
+            }}
+            onClick={() => addItem(item)}
+            color="link"
+          >
+            +
+          </Button>
+          <Button
+            style={{
+              height: 25,
+              padding: 0,
+              width: 15,
+              marginRight: 10,
+            }}
+            onClick={() => removeItem(item)}
+            color="link"
+          >
+            -
+          </Button>
+          <span style={{ marginLeft: 5 }} id="item-quantity">
+            {item.quantity}x
+          </span>
+        </div>
+      </div>
+    ));
+  } else {
+    return <div></div>;
   }
-const checkoutItems = ()=>{
-  return (
-    <div>
-      <Badge style={{ width: 200, padding: 10 }} color="light">
-        <h5 style={{ fontWeight: 100, color: "gray" }}>Total:</h5>
-        <h3>${cart.total}</h3>
-      </Badge>
-          <Link href="/checkout/">
-            <Button style={{ width: "60%" }} color="primary">
-              <a>Order</a>
-            </Button>
-          </Link>
-    </div>
-  )}
+};
+  const checkoutItems = () => {
+    const totalAmount = isNaN(cart.total) ? 0 : cart.total;
+  
+    return (
+      <div>
+        <Badge style={{ width: 200, padding: 10 }} color="light">
+          <h5 style={{ fontWeight: 100, color: "gray" }}>Total:</h5>
+          <h3>${totalAmount}</h3>
+        </Badge>
+        <Link href="/checkout/">
+          <Button style={{ width: "60%" }} color="primary">
+            <a>Order</a>
+          </Button>
+        </Link>
+      </div>
+    );
+  };
 
 // return Cart
   return (
@@ -109,7 +106,7 @@ const checkoutItems = ()=>{
         </CardBody>
       </Card>
       <style jsx>{`
-        #item-price {
+        #item-priceInCents {
           font-size: 1.3em;
           color: rgba(97, 97, 97, 1);
         }

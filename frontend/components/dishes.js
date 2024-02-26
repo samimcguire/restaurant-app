@@ -74,12 +74,13 @@ function Dishes({ restId }) {
                 <CardBody>
                   <CardTitle>{res.attributes.name}</CardTitle>
                   <CardText>{res.attributes.description}</CardText>
+                  <CardText>{res.attributes.priceInCents}</CardText>
                 </CardBody>
                 <div className="card-footer">
                   <Button
                     color="info"
                     outline
-                    onClick={() => addItem(res.attributes)}
+                    onClick={() => addItem(res)}
                   > 
                     + Add To Cart
                   </Button>
