@@ -1,46 +1,60 @@
 "use strict";
+const stripe = require("stripe")("sk_test_51OligvJdPNFu2ZsGyUak99XgycrgTzRLCKdXeZMhrPyXOsyKg57YNfE2pA9XKNdNoQAUxdLyjlqnKcegHJ2oMMuQ00vNxdPoOQ");
+
 /**
- * Order.js controller
- *
- * @description: A set of functions called "actions" for managing `Order`.
+ *  order controller
  */
-// note that this needs to be a "private" key from STRIPE
-const stripe = require("stripe")(
-    // Enter your private key for test environment of STRIPE here
-  "sk_test_51OligvJdPNFu2ZsGyUak99XgycrgTzRLCKdXeZMhrPyXOsyKg57YNfE2pA9XKNdNoQAUxdLyjlqnKcegHJ2oMMuQ00vNxdPoOQ"
-);
-module.exports = {
-  /**
-   * Create a/an order record.
-   *
-   * @return {Object}
-   */
+const { createCoreController } = require("@strapi/strapi").factories;
+module.exports = createCoreController("api::order.order", ({ strapi }) => ({
+  async create(ctx) {
+    const user = ctx.state.user;
 
-  create: async (ctx) => {
-    const { address, amount, dishes, token, city, state } = JSON.parse(
-      ctx.request.body
-    );
-    const stripeAmount = Math.floor(amount * 100);
-    // charge on stripe
-    const charge = await stripe.charges.create({
-      // Transform cents to dollars.
-      amount: stripeAmount,
-      currency: "usd",
-      description: `Order ${new Date()} by ${ctx.state.user._id}`,
-      source: token,
-    });
+    if (!user) {
+      return ctx.unauthorized("You are not authorized!");
+    }
 
-    // Register the order in the database
-    const order = await strapi.services.order.create({
-      user: ctx.state.user.id,
-      charge_id: charge.id,
-      amount: stripeAmount,
-      address,
-      dishes,
-      city,
-      state,
-    });
+    console.log(ctx.request.body.data);
+    console.log(ctx.state.user.id);
+    console.log("order controller");
 
-    return order;
+    const { address, amount, dishes, token, city, state } =
+      ctx.request.body.data;
+
+    try {
+      // Charge the customer
+      await stripe.charges.create({
+        amount: amount,
+        currency: "usd",
+        description: `Order ${new Date()} by ${ctx.state.user.id}`,
+        source: token,
+      });
+
+      // Create the order
+      const order = await strapi.service("api::order.order").create({
+        data: {
+          amount,
+          address,
+          dishes,
+          city,
+          state,
+          token,
+          user: ctx.state.user.id,
+        },
+      });
+      return order;
+    } catch (err) {
+      // return 500 error
+      console.log("err", err);
+      ctx.response.status = 500;
+      return {
+        error: { message: "There was a problem creating the charge" },
+        address,
+        amount,
+        dishes,
+        token,
+        city,
+        state,
+      };
+    }
   },
-};
+}));
